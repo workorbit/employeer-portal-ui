@@ -1,0 +1,53 @@
+<app-shell [pageTitle]="employee()?.name || 'Employee'">
+  <a routerLink="/employees" class="back-link">&larr; Back to directory</a>
+
+  @if (loading() && !employee()) {
+    <p class="empty-caption">Loading employee…</p>
+  } @else if (!employee()) {
+    <p class="empty-caption">Employee not found.</p>
+  } @else {
+    <section class="panel profile-panel">
+      <dl class="profile-grid">
+        <div>
+          <dt>Email</dt>
+          <dd>{{ employee()!.email }}</dd>
+        </div>
+        <div>
+          <dt>Department</dt>
+          <dd>{{ employee()!.department || '—' }}</dd>
+        </div>
+        <div>
+          <dt>Designation</dt>
+          <dd>{{ employee()!.designation || '—' }}</dd>
+        </div>
+        <div>
+          <dt>Joined</dt>
+          <dd>{{ employee()!.joiningDate | date: 'mediumDate' }}</dd>
+        </div>
+        <div>
+          <dt>Status</dt>
+          <dd>
+            <span class="status-pill" [class.inactive]="!employee()!.isActive">
+              {{ employee()!.isActive ? 'Active' : 'Inactive' }}
+            </span>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <div class="detail-tabs">
+      <button type="button" [class.active]="activeTab() === 'timesheets'" (click)="setTab('timesheets')">
+        Timesheets
+      </button>
+      <button type="button" [class.active]="activeTab() === 'payroll'" (click)="setTab('payroll')">
+        Payroll
+      </button>
+    </div>
+
+    @if (activeTab() === 'timesheets') {
+      <app-timesheets-list [employeeId]="employeeId()" />
+    } @else {
+      <app-payroll-list [employeeId]="employeeId()" />
+    }
+  }
+</app-shell>

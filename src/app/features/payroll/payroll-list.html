@@ -1,0 +1,80 @@
+@if (loading()) {
+  <p class="empty-caption">Loading payroll claims…</p>
+} @else if (visibleClaims().length === 0) {
+  <p class="empty-caption">No payroll claims submitted yet.</p>
+} @else {
+  <div class="payroll-list">
+    @for (claim of visibleClaims(); track claim.id) {
+      <div class="payroll-card">
+        <div class="payroll-header">
+          <div>
+            <p class="payroll-title">{{ employeeName(claim.employeeId) }}</p>
+            <p class="payroll-caption">{{ periodLabel(claim.period) }} · Net pay {{ claim.netPay }}</p>
+          </div>
+          <span class="status-pill" [class]="claim.status">{{ claim.status }}</span>
+        </div>
+
+        <button type="button" class="details-toggle" (click)="toggleExpanded(claim)">
+          <app-icon [name]="isExpanded(claim) ? 'chevron-down' : 'chevron-right'" [size]="14" />
+          {{ isExpanded(claim) ? 'Hide' : 'View' }} breakdown
+        </button>
+
+        @if (isExpanded(claim)) {
+          <div class="breakdown-panel">
+            @if (claim.notes) {
+              <p class="breakdown-notes"><strong>Employee's note:</strong> {{ claim.notes }}</p>
+            }
+            <dl class="breakdown-grid">
+              <div><dt>Basic Pay</dt><dd>{{ claim.basicPay }}</dd></div>
+              <div><dt>Bonus</dt><dd>{{ claim.bonus }}</dd></div>
+              <div><dt>Deductions</dt><dd>{{ claim.deductions }}</dd></div>
+              <div><dt>Reimbursement</dt><dd>{{ claim.reimbursement }}</dd></div>
+              <div class="breakdown-net"><dt>Net Pay</dt><dd>{{ claim.netPay }}</dd></div>
+            </dl>
+          </div>
+        }
+
+        @if (claim.statusHistory.length > 0) {
+          <ul class="history-list">
+            @for (event of claim.statusHistory; track event.changedAt) {
+              <li>
+                <span class="history-status" [class]="event.status">{{ event.status }}</span>
+                @if (event.remarks) {
+                  <span class="history-remarks">— {{ event.remarks }}</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        @if (claim.status === PayrollClaimStatus.PENDING) {
+          <div class="decision-panel">
+            <textarea
+              class="remarks-input"
+              placeholder="Remarks (required for reject, optional otherwise)"
+              [ngModel]="remarksFor(claim.id)"
+              (ngModelChange)="setRemarks(claim.id, $event)"
+            ></textarea>
+            <div class="decision-actions">
+              <button type="button" class="btn-approve" (click)="decide(claim.id, PayrollClaimStatus.APPROVED)">
+                Approve
+              </button>
+              <button type="button" class="btn-reject" (click)="decide(claim.id, PayrollClaimStatus.REJECTED)">
+                Reject
+              </button>
+              <button type="button" class="btn-pending" (click)="decide(claim.id, PayrollClaimStatus.PENDING)">
+                Keep Pending
+              </button>
+            </div>
+          </div>
+        }
+
+        @if (claim.status === PayrollClaimStatus.APPROVED) {
+          <div class="decision-panel">
+            <button type="button" class="btn-mark-paid" (click)="markPaid(claim.id)">Mark as Paid</button>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

@@ -1,0 +1,108 @@
+.back-link {
+  display: inline-block;
+  margin-bottom: var(--space-4);
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.empty-caption {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.panel {
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.profile-panel {
+  margin-bottom: var(--space-5);
+}
+
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--space-4);
+  margin: 0;
+
+  dt {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-success) 18%, transparent);
+  color: var(--color-success);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+
+  &.inactive {
+    background: color-mix(in srgb, var(--color-text-muted) 18%, transparent);
+    color: var(--color-text-muted);
+  }
+}
+
+.detail-tabs {
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  margin-bottom: var(--space-5);
+  border-radius: 999px;
+
+  button {
+    padding: var(--space-2) var(--space-5);
+    background: none;
+    border: none;
+    border-radius: 999px;
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+
+    &:hover:not(.active) {
+      color: var(--color-text);
+    }
+
+    &.active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      font-weight: var(--font-weight-semibold);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+  }
+}
+
+@media (max-width: 900px) {
+  .profile-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+}

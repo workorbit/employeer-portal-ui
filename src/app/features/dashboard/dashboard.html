@@ -1,0 +1,174 @@
+<app-shell pageTitle="Dashboard">
+  <section class="panel chart-panel">
+    <div class="panel-header">
+      <div>
+        <h2 class="panel-title">Timesheet activity</h2>
+        <p class="panel-subtitle">Last {{ chartBars().length }} submissions across your team</p>
+      </div>
+      <div class="status-chips">
+        <span class="status-chip">
+          <app-icon name="employees" [size]="14" />
+          {{ activeEmployeeCount() }} active
+        </span>
+        <span class="status-chip status-chip-warning">
+          <app-icon name="timesheets" [size]="14" />
+          {{ pendingTimesheetCount() }} timesheets pending
+        </span>
+        <span class="status-chip status-chip-warning">
+          <app-icon name="payroll" [size]="14" />
+          {{ pendingPayrollCount() }} payroll pending
+        </span>
+      </div>
+    </div>
+
+    @if (chartBars().length === 0) {
+      <p class="empty-caption">No timesheets submitted yet — activity will show up here once employees submit one.</p>
+    } @else {
+      <div class="chart-wrap">
+        <svg
+          class="chart-svg"
+          [attr.viewBox]="chartViewBox"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label="Bar chart of hours submitted per timesheet"
+        >
+          <!-- Gridlines + y-axis tick labels -->
+          @for (line of chartGridlines(); track line.label) {
+            <line
+              class="chart-gridline"
+              [attr.x1]="chartGutterLeft"
+              [attr.x2]="chartViewBoxWidth"
+              [attr.y1]="line.y"
+              [attr.y2]="line.y"
+            />
+            <text class="chart-axis-label" [attr.x]="chartGutterLeft - 8" [attr.y]="line.y" text-anchor="end" dominant-baseline="middle">
+              {{ line.label }}
+            </text>
+          }
+
+          <!-- Baseline -->
+          <line
+            class="chart-baseline"
+            [attr.x1]="chartGutterLeft"
+            [attr.x2]="chartViewBox.split(' ')[2]"
+            [attr.y1]="chartBaselineY"
+            [attr.y2]="chartBaselineY"
+          />
+
+          <!-- Bars -->
+          @for (bar of chartBars(); track $index) {
+            <path class="chart-bar" [class.hovered]="hoveredBarIndex() === $index" [attr.d]="bar.path" />
+            <text class="chart-x-label" [attr.x]="bar.labelX" [attr.y]="bar.labelY" text-anchor="middle">
+              {{ bar.label }}
+            </text>
+            <!-- Hit target spans the whole band (wider than the bar itself), not just the painted bar -->
+            <rect
+              class="chart-hit-area"
+              [attr.x]="bar.bandX"
+              [attr.y]="0"
+              [attr.width]="bar.bandWidth"
+              [attr.height]="chartBaselineY"
+              (pointerenter)="setHoveredBar($index)"
+              (pointerleave)="setHoveredBar(null)"
+              (focus)="setHoveredBar($index)"
+              (blur)="setHoveredBar(null)"
+              tabindex="0"
+              [attr.aria-label]="bar.label + ': ' + bar.value + ' hours'"
+            />
+          }
+        </svg>
+
+        @if (hoveredBar(); as bar) {
+          <div class="chart-tooltip" [style.left.%]="bar.bandCenterPercent">
+            <strong>{{ bar.value }} hrs</strong>
+            <span>{{ bar.label }}</span>
+          </div>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="tables-grid">
+    <div class="panel">
+      <div class="table-header-row">
+        <h2 class="panel-title">Timesheets awaiting review</h2>
+      </div>
+      @if (pendingTimesheets().length === 0) {
+        <p class="empty-caption">Nothing pending review right now.</p>
+      } @else {
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Period</th>
+              <th>Hours</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (timesheet of pendingTimesheets(); track timesheet.id) {
+              <tr>
+                <td>
+                  <a class="employee-link" [routerLink]="['/employees', timesheet.employeeId]">
+                    {{ employeeName(timesheet.employeeId) }}
+                  </a>
+                </td>
+                <td>{{ reviewPeriodLabel(timesheet) }}</td>
+                <td>{{ timesheet.totalHours }}</td>
+                <td><span class="status-pill" [class]="timesheet.status">{{ timesheet.status }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <div class="panel">
+      <div class="table-header-row">
+        <h2 class="panel-title">Payroll claims awaiting review</h2>
+      </div>
+      @if (pendingPayrollClaims().length === 0) {
+        <p class="empty-caption">Nothing pending review right now.</p>
+      } @else {
+        <table class="mini-table">
+          <thead>
+            <tr>
+              <th>Employee</th>
+              <th>Period</th>
+              <th>Net pay</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (claim of pendingPayrollClaims(); track claim.id) {
+              <tr>
+                <td>
+                  <a class="employee-link" [routerLink]="['/employees', claim.employeeId]">
+                    {{ employeeName(claim.employeeId) }}
+                  </a>
+                </td>
+                <td>{{ reviewPeriodLabel(claim) }}</td>
+                <td>{{ claim.netPay }}</td>
+                <td><span class="status-pill" [class]="claim.status">{{ claim.status }}</span></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2 class="panel-title">Quick actions</h2>
+    <a class="quick-action" routerLink="/employees">
+      <span class="quick-action-icon">
+        <app-icon name="employees" [size]="20" />
+      </span>
+      <span class="quick-action-body">
+        <span class="quick-action-title">Manage employees</span>
+        <span class="quick-action-desc">Add employees or open a profile to review their timesheets and payroll</span>
+      </span>
+      <app-icon class="quick-action-arrow" name="chevron-right" [size]="16" />
+    </a>
+  </section>
+</app-shell>

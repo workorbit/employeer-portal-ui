@@ -1,0 +1,433 @@
+// Theme tokens (--color-*, --space-*, etc.) come from the app-wide
+// :root block in styles/_variables.scss — loaded once globally, so unlike
+// the Employee Portal's login.scss this file doesn't need its own
+// :host theme mixin. Everything below just reads var(--...) directly.
+
+a:focus-visible,
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--color-focus-ring);
+}
+
+// ---------- Split-screen layout ----------
+
+.login-screen {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  min-height: 100dvh;
+}
+
+.login-visual {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: var(--space-6) var(--space-7);
+  background: var(--color-surface-2);
+}
+
+.visual-brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-decoration: none;
+  border-radius: var(--radius-md);
+
+  .brand-mark {
+    width: 36px;
+    height: 36px;
+    margin-bottom: 0;
+    object-fit: contain;
+  }
+
+  .brand-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+  }
+}
+
+.visual-img {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  width: 100%;
+  max-width: 520px;
+  margin: var(--space-6) auto 0;
+  object-fit: contain;
+}
+
+.visual-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 420px;
+  margin: 0 auto var(--space-6);
+  text-align: center;
+
+  h2 {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+  }
+
+  p {
+    margin: 0;
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-relaxed);
+    color: var(--color-text-muted);
+  }
+}
+
+// ---------- Right-hand panel ----------
+
+.login-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  padding: var(--space-6);
+  padding-top: max(var(--space-6), env(safe-area-inset-top));
+  padding-bottom: max(var(--space-6), env(safe-area-inset-bottom));
+  background: var(--color-bg);
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-2) var(--space-2);
+  margin: calc(var(--space-2) * -1);
+  margin-bottom: 0;
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition: color 0.15s ease, background 0.15s ease;
+
+  app-icon {
+    flex-shrink: 0;
+    transition: transform 0.15s ease;
+  }
+
+  &:hover {
+    color: var(--color-primary);
+    background: var(--color-surface-hover);
+
+    app-icon {
+      transform: translateX(-2px);
+    }
+  }
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: var(--space-7);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  animation: card-in 0.35s ease both;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--space-6);
+}
+
+.brand-mark {
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--space-4);
+  object-fit: contain;
+}
+
+.login-title {
+  margin: 0 0 var(--space-2);
+  font-size: var(--font-size-2xl);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text);
+}
+
+.login-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-relaxed);
+  color: var(--color-text-muted);
+}
+
+// ---------- Form fields ----------
+
+.field {
+  margin-bottom: var(--space-5);
+}
+
+.field-label {
+  display: block;
+  margin-bottom: var(--space-2);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.field-input-wrap {
+  position: relative;
+}
+
+.field-input {
+  width: 100%;
+  // Explicit minimum rather than trusting padding + line-height alone to
+  // clear the ~44px comfortable tap-target size on touchscreens.
+  min-height: 44px;
+  padding: var(--padding-input);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  // Held at --font-size-base (16px) on purpose at every breakpoint —
+  // anything smaller makes iOS Safari auto-zoom in on focus.
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+
+  &.has-trailing {
+    padding-right: var(--space-8);
+  }
+
+  &::placeholder {
+    color: var(--color-text-muted);
+  }
+
+  &:hover:not(:focus) {
+    border-color: var(--color-border-hover);
+  }
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-focus-ring);
+  }
+
+  // Angular adds ng-touched/ng-invalid to the control element itself —
+  // styling off that gives real-time validity feedback (required,
+  // invalid email, too-short password) with no template changes needed.
+  &.ng-touched.ng-invalid {
+    border-color: var(--color-danger);
+    background: rgba(var(--color-danger-rgb), 0.05);
+
+    &:focus {
+      box-shadow: 0 0 0 3px rgba(var(--color-danger-rgb), 0.2);
+    }
+  }
+
+  // Overrides the browser's forced yellow autofill background so it
+  // matches the field's own surface color instead of clashing with it.
+  &:-webkit-autofill,
+  &:-webkit-autofill:hover,
+  &:-webkit-autofill:focus {
+    -webkit-text-fill-color: var(--color-text);
+    -webkit-box-shadow: 0 0 0 1000px var(--color-surface-2) inset;
+    transition: background-color 600000s ease-in-out 0s;
+  }
+}
+
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: var(--space-2);
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 32px;
+  padding: var(--space-1) var(--space-3);
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  transition: color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    color: var(--color-text);
+    background: var(--color-surface-hover);
+  }
+}
+
+.form-error {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(var(--color-danger-rgb), 0.3);
+  background: rgba(var(--color-danger-rgb), 0.12);
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-normal);
+  word-break: break-word;
+  animation: error-in 0.2s ease both;
+
+  &::before {
+    content: '!';
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--color-danger);
+    color: #fff;
+    font-size: 11px;
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+// ---------- Submit ----------
+
+.submit-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--padding-button);
+  background: var(--color-primary);
+  color: #fff;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s ease, opacity 0.15s ease, transform 0.1s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--color-primary-dark);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
+  }
+
+  &:disabled {
+    opacity: 0.75;
+    cursor: not-allowed;
+  }
+
+  // Pure-CSS spinner — shows automatically whenever [disabled]="loading()"
+  // is true, no extra markup required.
+  &:disabled::before {
+    content: '';
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+  }
+}
+
+// ---------- Animations ----------
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes error-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-card,
+  .form-error,
+  .submit-btn:disabled::before {
+    animation: none;
+  }
+}
+
+// ---------- Responsive ----------
+//
+// The visual panel drops out first (900px) since it's purely decorative,
+// then spacing tightens twice more (480px, 360px). The card stays
+// full-width up to its 400px cap throughout, so it never floats loose in
+// a too-wide column on mid-size phones.
+
+@media (max-width: 900px) {
+  .login-screen {
+    grid-template-columns: 1fr;
+  }
+
+  .login-visual {
+    display: none;
+  }
+
+  .login-panel {
+    min-height: 100dvh;
+    padding: var(--space-5);
+  }
+}
+
+@media (max-width: 480px) {
+  .login-panel {
+    padding: var(--space-4);
+  }
+
+  .login-card {
+    padding: var(--space-5);
+  }
+
+  .login-title {
+    font-size: var(--font-size-xl);
+  }
+}
+
+@media (max-width: 360px) {
+  .login-panel {
+    padding: var(--space-3);
+  }
+
+  .login-card {
+    padding: var(--space-4);
+  }
+
+  .back-btn {
+    max-width: none;
+  }
+}

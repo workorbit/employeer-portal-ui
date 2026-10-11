@@ -1,0 +1,78 @@
+<div class="login-screen">
+  <div class="login-visual">
+    <a class="visual-brand" routerLink="/">
+      <img class="brand-mark" src="assets/images/Logo.png" alt="WorkHub logo" />
+      <span class="brand-name">WorkHub</span>
+    </a>
+    <!--
+      ASSUMPTION: pointing this at the same assets/images/ path and file
+      name used on the Employee Portal's login screen. If the image you
+      added to this app's assets folder has a different file name, just
+      swap the src below to match — nothing else in this file depends on
+      the name.
+    -->
+    <img
+      class="visual-img"
+      src="assets/images/Admin_login_img.png"
+      alt="Illustration of an employer managing their team"
+    />
+    <div class="visual-copy">
+      <h2>Run your team from one place</h2>
+      <p>Manage employees, review timesheets, and run payroll — all in a single dashboard.</p>
+    </div>
+  </div>
+
+  <div class="login-panel">
+    <a class="back-btn" routerLink="/">
+      <app-icon name="arrow-back" [size]="16" />
+      Back to home
+    </a>
+
+    <div class="login-card">
+      <div class="login-header">
+        <img class="brand-mark" src="assets/images/Logo.png" alt="WorkHub logo" />
+        <h1 class="login-title">WorkHub</h1>
+        <p class="login-subtitle">Sign in to manage employees, timesheets, and payroll.</p>
+      </div>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        @if (error()) {
+          <div class="form-error">{{ error() }}</div>
+        }
+
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="field-input"
+            formControlName="email"
+            placeholder="you@company.com"
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="password">Password</label>
+          <div class="field-input-wrap">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              class="field-input has-trailing"
+              formControlName="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+            />
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility()">
+              {{ showPassword() ? 'Hide' : 'Show' }}
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn" [disabled]="loading()">
+          {{ loading() ? 'Signing in…' : 'Sign in' }}
+        </button>
+      </form>
+    </div>
+  </div>
+</div>

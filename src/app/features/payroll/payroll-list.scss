@@ -1,0 +1,216 @@
+.empty-caption {
+  margin: 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.payroll-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.payroll-card {
+  padding: var(--space-5);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.payroll-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.payroll-title {
+  margin: 0;
+  color: var(--color-text);
+  font-weight: var(--font-weight-medium);
+}
+
+.payroll-caption {
+  margin: 2px 0 0;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  text-transform: capitalize;
+  background: color-mix(in srgb, var(--color-warning) 18%, transparent);
+  color: var(--color-warning);
+
+  &.approved {
+    background: color-mix(in srgb, var(--color-success) 18%, transparent);
+    color: var(--color-success);
+  }
+  &.rejected {
+    background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+    color: var(--color-danger);
+  }
+  &.paid {
+    background: color-mix(in srgb, var(--color-primary) 18%, transparent);
+    color: var(--color-primary);
+  }
+}
+
+.details-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-3);
+  padding: var(--space-1) 0;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.breakdown-panel {
+  margin-bottom: var(--space-4);
+}
+
+.breakdown-notes {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-size: var(--font-size-sm);
+
+  strong {
+    color: var(--color-text-muted);
+    font-weight: var(--font-weight-semibold);
+  }
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-4);
+  margin: 0;
+  padding: var(--space-4);
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+
+  dt {
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+  }
+
+  dd {
+    margin: var(--space-1) 0 0;
+    color: var(--color-text);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+  }
+}
+
+.breakdown-net dd {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+.history-list {
+  list-style: none;
+  margin: 0 0 var(--space-4);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  font-size: var(--font-size-sm);
+}
+
+.history-status {
+  text-transform: capitalize;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-text);
+}
+
+.history-remarks {
+  color: var(--color-text-muted);
+}
+
+.decision-panel {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.remarks-input {
+  width: 100%;
+  min-height: 70px;
+  margin-bottom: var(--space-3);
+  padding: var(--padding-input);
+  background: var(--color-surface-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  color: var(--color-text);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  resize: vertical;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+  }
+}
+
+.decision-actions {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.btn-approve,
+.btn-reject,
+.btn-pending,
+.btn-mark-paid {
+  padding: var(--space-2) var(--space-4);
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  color: #fff;
+}
+
+.btn-approve {
+  background: var(--color-success);
+}
+
+.btn-reject {
+  background: var(--color-danger);
+}
+
+.btn-pending {
+  background: var(--color-warning);
+}
+
+.btn-mark-paid {
+  background: var(--color-primary);
+}
+
+@media (max-width: 700px) {
+  .breakdown-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .breakdown-grid {
+    grid-template-columns: 1fr;
+  }
+}

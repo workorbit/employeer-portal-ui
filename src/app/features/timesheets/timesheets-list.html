@@ -1,0 +1,95 @@
+@if (loading()) {
+  <p class="empty-caption">Loading timesheets…</p>
+} @else if (visibleTimesheets().length === 0) {
+  <p class="empty-caption">No timesheets submitted yet.</p>
+} @else {
+  <div class="timesheet-list">
+    @for (timesheet of visibleTimesheets(); track timesheet.id) {
+      <div class="timesheet-card">
+        <div class="timesheet-header">
+          <div>
+            <p class="timesheet-title">{{ employeeName(timesheet.employeeId) }}</p>
+            <p class="timesheet-caption">
+              {{ periodRangeLabel(timesheet) }} · {{ timesheet.periodType === 'monthly' ? 'Monthly' : 'Weekly' }} · {{ timesheet.totalHours }}h total
+            </p>
+          </div>
+          <span class="status-pill" [class]="timesheet.status">{{ timesheet.status }}</span>
+        </div>
+
+        <button type="button" class="details-toggle" (click)="toggleExpanded(timesheet)">
+          <app-icon [name]="isExpanded(timesheet) ? 'chevron-down' : 'chevron-right'" [size]="14" />
+          {{ isExpanded(timesheet) ? 'Hide' : 'View' }} full timesheet
+        </button>
+
+        @if (isExpanded(timesheet)) {
+          <div class="entries-panel">
+            @if (timesheet.comment) {
+              <p class="entries-comment"><strong>Employee's note:</strong> {{ timesheet.comment }}</p>
+            }
+            <div class="table-scroll">
+              <table class="entries-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                    <th>Hours</th>
+                    <th>Comment</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (entry of sortedEntries(timesheet); track entry.date) {
+                    <tr>
+                      <td>{{ dayLabel(entry.date) }}</td>
+                      <td>{{ entry.date }}</td>
+                      <td>
+                        <span class="entry-status-pill" [class]="entry.status">{{ entryStatusLabel(entry.status) }}</span>
+                      </td>
+                      <td>{{ entry.hours }}</td>
+                      <td>{{ entry.task || '—' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        @if (timesheet.statusHistory.length > 0) {
+          <ul class="history-list">
+            @for (event of timesheet.statusHistory; track event.changedAt) {
+              <li>
+                <span class="history-status" [class]="event.status">{{ event.status }}</span>
+                @if (event.remarks) {
+                  <span class="history-remarks">— {{ event.remarks }}</span>
+                }
+              </li>
+            }
+          </ul>
+        }
+
+        @if (timesheet.status === TimesheetStatus.PENDING) {
+          <div class="decision-panel">
+            <textarea
+              class="remarks-input"
+              placeholder="Remarks (required for reject, optional otherwise)"
+              [ngModel]="remarksFor(timesheet.id)"
+              (ngModelChange)="setRemarks(timesheet.id, $event)"
+            ></textarea>
+            <div class="decision-actions">
+              <button type="button" class="btn-approve" (click)="decide(timesheet.id, TimesheetStatus.APPROVED)">
+                Approve
+              </button>
+              <button type="button" class="btn-reject" (click)="decide(timesheet.id, TimesheetStatus.REJECTED)">
+                Reject
+              </button>
+              <button type="button" class="btn-pending" (click)="decide(timesheet.id, TimesheetStatus.PENDING)">
+                Keep Pending
+              </button>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+}

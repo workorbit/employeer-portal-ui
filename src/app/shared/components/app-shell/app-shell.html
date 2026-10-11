@@ -1,0 +1,107 @@
+<div class="app-shell">
+  <aside class="sidebar" [class.collapsed]="collapsed()">
+    <div class="sidebar-brand-row">
+      <a class="sidebar-brand" routerLink="/dashboard">
+        <img class="brand-mark" src="assets/images/Logo.png" alt="WorkHub logo" />
+        @if (!collapsed()) {
+          <span class="brand-name">WorkHub</span>
+        }
+      </a>
+    </div>
+
+    @if (!collapsed()) {
+      <span class="sidebar-section-label">Menu</span>
+    }
+
+    <nav class="sidebar-nav">
+      <a class="nav-item" routerLink="/dashboard" routerLinkActive="active" [title]="collapsed() ? 'Dashboard' : ''">
+        <app-icon name="dashboard" [size]="18" />
+        @if (!collapsed()) {
+          <span>Dashboard</span>
+        }
+      </a>
+      <a class="nav-item" routerLink="/employees" routerLinkActive="active" [title]="collapsed() ? 'Employees' : ''">
+        <app-icon name="employees" [size]="18" />
+        @if (!collapsed()) {
+          <span>Employees</span>
+        }
+      </a>
+      <a class="nav-item" routerLink="/feedback-inbox" routerLinkActive="active" [title]="collapsed() ? 'Feedback Inbox' : ''">
+        <app-icon name="feedback" [size]="18" />
+        @if (!collapsed()) {
+          <span>Feedback Inbox</span>
+        }
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Straddles the sidebar's right border — half in the sidebar, half in
+       the main content — rather than living inside either one. -->
+  <button
+    type="button"
+    class="collapse-toggle"
+    [class.collapsed]="collapsed()"
+    (click)="toggleCollapsed()"
+    [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"
+  >
+    <app-icon name="sidebar-toggle" [size]="14" />
+  </button>
+
+  <div class="main">
+    <header class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">{{ pageTitle }}</h1>
+      </div>
+
+      <div class="topbar-right">
+        <div class="profile-menu">
+          <button type="button" class="profile-trigger" [class.open]="profileMenuOpen()" (click)="toggleProfileMenu()">
+            <span class="user-avatar">{{ initials() }}</span>
+            <span class="profile-trigger-name">{{ displayName() }}</span>
+            <app-icon name="chevron-down" [size]="14" />
+          </button>
+
+          @if (profileMenuOpen()) {
+            <div class="profile-backdrop" (click)="closeProfileMenu()"></div>
+            <div class="profile-dropdown">
+              <div class="profile-dropdown-header">
+                <span class="user-avatar">{{ initials() }}</span>
+                <div class="profile-dropdown-meta">
+                  <p class="profile-dropdown-name">{{ displayName() }}</p>
+                  <span class="role-badge">Employer / Admin</span>
+                </div>
+              </div>
+              <div class="profile-dropdown-company">WorkHub</div>
+              <a class="profile-dropdown-item" routerLink="/company-settings" (click)="closeProfileMenu()">
+                <app-icon name="settings" [size]="16" />
+                Company Settings
+              </a>
+              <button type="button" class="profile-dropdown-item logout" (click)="logout()">
+                <app-icon name="logout" [size]="16" />
+                Log out
+              </button>
+            </div>
+          }
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <ng-content></ng-content>
+    </main>
+
+    <!-- Mobile-only: replaces the sidebar entirely below 768px — icon-only,
+         direct one-tap access to every page instead of a hamburger + drawer. -->
+    <nav class="mobile-bottom-nav">
+      <a class="mobile-nav-item" routerLink="/dashboard" routerLinkActive="active" aria-label="Dashboard">
+        <app-icon name="dashboard" [size]="20" />
+      </a>
+      <a class="mobile-nav-item" routerLink="/employees" routerLinkActive="active" aria-label="Employees">
+        <app-icon name="employees" [size]="20" />
+      </a>
+      <a class="mobile-nav-item" routerLink="/feedback-inbox" routerLinkActive="active" aria-label="Feedback Inbox">
+        <app-icon name="feedback" [size]="20" />
+      </a>
+    </nav>
+  </div>
+</div>

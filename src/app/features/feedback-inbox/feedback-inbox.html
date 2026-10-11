@@ -1,0 +1,100 @@
+<app-shell pageTitle="Feedback Inbox">
+  <div class="summary-strip">
+    <button type="button" class="summary-chip" [class.active]="statusFilter() === 'all'" (click)="setStatusFilter('all')">
+      <span class="summary-value">{{ items().length }}</span>
+      <span class="summary-label">All</span>
+    </button>
+    <button type="button" class="summary-chip open" [class.active]="statusFilter() === FeedbackStatus.OPEN" (click)="setStatusFilter(FeedbackStatus.OPEN)">
+      <span class="summary-value">{{ openCount() }}</span>
+      <span class="summary-label">Open</span>
+    </button>
+    <button type="button" class="summary-chip in-review" [class.active]="statusFilter() === FeedbackStatus.IN_REVIEW" (click)="setStatusFilter(FeedbackStatus.IN_REVIEW)">
+      <span class="summary-value">{{ inReviewCount() }}</span>
+      <span class="summary-label">In Review</span>
+    </button>
+    <button type="button" class="summary-chip resolved" [class.active]="statusFilter() === FeedbackStatus.RESOLVED" (click)="setStatusFilter(FeedbackStatus.RESOLVED)">
+      <span class="summary-value">{{ resolvedCount() }}</span>
+      <span class="summary-label">Resolved</span>
+    </button>
+  </div>
+
+  <section class="panel">
+    @if (loading()) {
+      <p class="empty-caption">Loading feedback…</p>
+    } @else if (filteredItems().length === 0) {
+      <div class="empty-state">
+        <app-icon name="feedback" [size]="28" />
+        <p>Nothing here.</p>
+      </div>
+    } @else {
+      <div class="feedback-list">
+        @for (item of filteredItems(); track item.id) {
+          <div class="feedback-card">
+            <div class="feedback-header">
+              <div>
+                <p class="feedback-employee">{{ employeeName(item.employeeId) }}</p>
+                <div class="feedback-meta-row">
+                  <span class="category-pill">{{ categoryLabel(item.category) }}</span>
+                  <span class="feedback-date">Raised {{ item.createdAt | date: 'MMM d, y, h:mm a' }}</span>
+                </div>
+              </div>
+              <span class="status-pill" [class]="item.status">
+                @if (item.status === 'resolved') {
+                  <app-icon name="check" [size]="12" />
+                } @else {
+                  <app-icon name="clock" [size]="12" />
+                }
+                {{ item.status === 'in_review' ? 'In Review' : (item.status === 'resolved' ? 'Resolved' : 'Open') }}
+              </span>
+            </div>
+
+            <p class="feedback-description">{{ item.description }}</p>
+
+            @if (item.replies.length > 0) {
+              <div class="reply-thread">
+                @for (reply of item.replies; track reply.at) {
+                  <div class="reply-bubble">
+                    <div class="reply-meta">
+                      <span class="reply-from">You</span>
+                      <span class="reply-at">{{ reply.at | date: 'MMM d, y, h:mm a' }}</span>
+                    </div>
+                    <p class="reply-message">{{ reply.message }}</p>
+                  </div>
+                }
+              </div>
+            }
+
+            @if (item.status !== FeedbackStatus.RESOLVED) {
+              <div class="decision-panel">
+                <textarea
+                  class="reply-input"
+                  placeholder="Write a reply — required to move this item forward…"
+                  [ngModel]="messageFor(item.id)"
+                  (ngModelChange)="setMessage(item.id, $event)"
+                ></textarea>
+                <div class="decision-actions">
+                  <button
+                    type="button"
+                    class="btn-review"
+                    [disabled]="!canReply(item)"
+                    (click)="reply(item, FeedbackStatus.IN_REVIEW)"
+                  >
+                    Mark In Review
+                  </button>
+                  <button
+                    type="button"
+                    class="btn-resolve"
+                    [disabled]="!canReply(item)"
+                    (click)="reply(item, FeedbackStatus.RESOLVED)"
+                  >
+                    Resolve
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </section>
+</app-shell>

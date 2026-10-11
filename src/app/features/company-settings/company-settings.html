@@ -1,0 +1,34 @@
+<app-shell pageTitle="Company Settings">
+  <section class="panel">
+    <h2 class="panel-title">Monthly pay cycle</h2>
+    <p class="panel-desc">
+      Choose the day of the month your pay cycle starts. Employees' Timesheets "Monthly" view and
+      Payroll period both follow this automatically.
+    </p>
+
+    <div class="field">
+      <label class="field-label" for="cycle-day">Pay cycle start day</label>
+      <select
+        id="cycle-day"
+        class="field-input"
+        [ngModel]="selectedDay()"
+        [ngModelOptions]="{ standalone: true }"
+        (ngModelChange)="setSelectedDay($event)"
+      >
+        @for (opt of cycleDayOptions; track opt.value) {
+          <option [value]="opt.value">{{ opt.label }}{{ opt.value === 1 ? ' (calendar month, default)' : '' }}</option>
+        }
+      </select>
+      @if (!isDefault()) {
+        <p class="field-hint">
+          A "monthly" period will run from the {{ selectedDay() }}th of one month to the
+          {{ selectedDay() - 1 }}th of the next.
+        </p>
+      }
+    </div>
+
+    <button type="button" class="cta-btn" [disabled]="saving()" (click)="save()">
+      {{ saving() ? 'Saving…' : 'Save' }}
+    </button>
+  </section>
+</app-shell>
